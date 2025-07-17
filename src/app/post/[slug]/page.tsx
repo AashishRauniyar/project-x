@@ -1,5 +1,6 @@
 import { getPostBySlug, getAllCategories } from "../../lib/wordpress";
 import { Post, Category, Tag } from "../../lib/wordpress.d";
+import { generatePostMetadata, extractStructuredData, generateArticleStructuredData, generateBreadcrumbData } from "../../lib/seo";
 import Link from "next/link";
 import Navbar from "@/components/ui/Navbar";
 import Breadcrumb from "@/components/ui/Breadcrumb";
@@ -7,6 +8,29 @@ import Footer from "@/components/ui/Footer";
 
 interface PostPageProps {
   params: Promise<{ slug: string }>;
+}
+
+// Generate dynamic metadata using Yoast SEO data
+export async function generateMetadata({ params }: PostPageProps) {
+  try {
+    const { slug } = await params;
+    const post = await getPostBySlug(slug);
+    
+    if (!post) {
+      return {
+        title: 'Post Not Found - Healthy Lifestyle Tips',
+        description: 'The article you are looking for could not be found.',
+      };
+    }
+    
+    return generatePostMetadata(post);
+  } catch (error) {
+    console.error('Error generating post metadata:', error);
+    return {
+      title: 'Article - Healthy Lifestyle Tips',
+      description: 'Expert health and wellness content to improve your lifestyle.',
+    };
+  }
 }
 
 export default async function PostPage({ params }: PostPageProps) {
@@ -45,8 +69,35 @@ export default async function PostPage({ params }: PostPageProps) {
       { label: post.title.rendered, href: `/post/${post.slug}` },
     ];
 
+    // Generate structured data
+    const articleStructuredData = generateArticleStructuredData(post);
+    const breadcrumbStructuredData = generateBreadcrumbData(breadcrumbItems);
+    const yoastStructuredData = extractStructuredData(post.yoast_head || '');
+
     return (
       <div className="min-h-screen bg-gray-50">
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(articleStructuredData),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(breadcrumbStructuredData),
+          }}
+        />
+        {yoastStructuredData && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(yoastStructuredData),
+            }}
+          />
+        )}
+        
         <Navbar />
         
         <main className="max-w-7xl mx-auto px-4 py-6">

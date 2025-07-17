@@ -1,9 +1,38 @@
 import { getCategoryBySlug, getPostsByCategorySlug } from "@/app/lib/wordpress";
 import { Post, Category, Tag } from "@/app/lib/wordpress.d";
+import { generateCategoryMetadata, generateBreadcrumbData, extractStructuredData } from "@/app/lib/seo";
 import Link from "next/link";
 import Navbar from "@/components/ui/Navbar";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import Footer from "@/components/ui/Footer";
+import StructuredData from "@/components/ui/StructuredData";
+
+// Generate dynamic metadata using Yoast SEO data
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  try {
+    const { slug } = await params;
+    const category = await getCategoryBySlug(slug);
+    
+    if (!category) {
+      return {
+        title: 'Category Not Found - Healthy Lifestyle Tips',
+        description: 'The category you are looking for could not be found.',
+      };
+    }
+    
+    return generateCategoryMetadata(category);
+  } catch (error) {
+    console.error('Error generating category metadata:', error);
+    return {
+      title: 'Category - Healthy Lifestyle Tips',
+      description: 'Explore our health and wellness articles by category.',
+    };
+  }
+}
 
 export default async function CategoryPage({
   params,
@@ -46,6 +75,13 @@ export default async function CategoryPage({
 
     return (
       <div className="min-h-screen bg-gray-50">
+        <StructuredData 
+          category={category}
+          breadcrumbs={breadcrumbItems}
+          includeYoastData={true}
+          includeOrganization={true}
+        />
+        
         <Navbar />
         
         <main className="max-w-7xl mx-auto px-4 py-6">

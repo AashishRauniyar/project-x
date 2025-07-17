@@ -22,6 +22,37 @@ interface RenderedTitle {
   rendered: string;
 }
 
+// Yoast SEO types
+export interface YoastHeadJson {
+  title?: string;
+  description?: string;
+  robots?: {
+    index?: boolean;
+    follow?: boolean;
+    'max-snippet'?: number;
+    'max-image-preview'?: string;
+    'max-video-preview'?: number;
+  };
+  canonical?: string;
+  og_locale?: string;
+  og_type?: string;
+  og_title?: string;
+  og_description?: string;
+  og_url?: string;
+  og_site_name?: string;
+  og_image?: Array<{
+    url: string;
+    width?: number;
+    height?: number;
+    type?: string;
+  }>;
+  twitter_card?: string;
+  twitter_title?: string;
+  twitter_description?: string;
+  twitter_image?: string;
+  schema?: Record<string, unknown>;
+}
+
 // Media types
 interface MediaSize {
   file: string;
@@ -76,6 +107,8 @@ export interface Post extends WPEntity {
   categories: number[];
   tags: number[];
   meta: Record<string, unknown>;
+  yoast_head?: string;
+  yoast_head_json?: YoastHeadJson;
   _embedded?: {
     author: Author[];
     "wp:featuredmedia": FeaturedMedia[];
@@ -111,6 +144,8 @@ interface Taxonomy {
 export interface Category extends Taxonomy {
   taxonomy: "category";
   parent: number;
+  yoast_head?: string;
+  yoast_head_json?: YoastHeadJson;
 }
 
 export interface Tag extends Taxonomy {

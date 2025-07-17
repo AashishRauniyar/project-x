@@ -1,4 +1,6 @@
 import React from 'react';
+import { extractStructuredData, generateOrganizationData, generateArticleStructuredData, generateBreadcrumbData } from '@/app/lib/seo';
+import type { Post, Category } from '@/app/lib/wordpress.d';
 
 interface Review {
   author: string;
@@ -40,6 +42,9 @@ interface Article {
 interface StructuredDataProps {
   article?: Article;
   product?: Product;
+  post?: Post;
+  category?: Category;
+  breadcrumbs?: Array<{ label: string; href: string }>;
   organization?: {
     name: string;
     url: string;
@@ -47,13 +52,29 @@ interface StructuredDataProps {
     description: string;
     sameAs: string[];
   };
+  includeYoastData?: boolean;
+  includeOrganization?: boolean;
 }
 
-const StructuredData: React.FC<StructuredDataProps> = ({ article, product, organization }) => {
+const StructuredData: React.FC<StructuredDataProps> = ({ 
+  article, 
+  product, 
+  post, 
+  category, 
+  breadcrumbs, 
+  organization, 
+  includeYoastData = true, 
+  includeOrganization = true 
+}) => {
   const generateStructuredData = () => {
-    const structuredData: any[] = [];
+    const structuredData: Record<string, unknown>[] = [];
 
-    // Organization schema
+    // Add default organization data if requested
+    if (includeOrganization && !organization) {
+      structuredData.push(generateOrganizationData());
+    }
+
+    // Organization schema (custom)
     if (organization) {
       structuredData.push({
         "@context": "https://schema.org",
@@ -67,6 +88,28 @@ const StructuredData: React.FC<StructuredDataProps> = ({ article, product, organ
         "description": organization.description,
         "sameAs": organization.sameAs
       });
+    }
+
+    // Post-based article schema (using WordPress data)
+    if (post) {
+      structuredData.push(generateArticleStructuredData(post));
+      
+      // Extract and include Yoast structured data if available
+      if (includeYoastData && post.yoast_head) {
+        const yoastData = extractStructuredData(post.yoast_head);
+        if (yoastData && yoastData['@graph']) {
+          // Yoast typically provides a graph with multiple items
+          const graph = yoastData['@graph'] as Record<string, unknown>[];
+          structuredData.push(...graph);
+        } else if (yoastData) {
+          structuredData.push(yoastData);
+        }
+      }
+    }
+
+    // Breadcrumbs schema
+    if (breadcrumbs && breadcrumbs.length > 0) {
+      structuredData.push(generateBreadcrumbData(breadcrumbs));
     }
 
     // Article schema
