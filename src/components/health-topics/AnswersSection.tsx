@@ -24,7 +24,7 @@ const AnswersSection = () => {
             Each article is medically reviewed by our medical experts, backed by
             research studies and current scientific findings. Whether you need
             information about symptoms, treatments, prevention, or general
-            wellness, we're here to help you understand your health and make
+            wellness, we&apos;re here to help you understand your health and make
             informed decisions.
           </p>
         </div>
