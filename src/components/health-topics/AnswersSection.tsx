@@ -6,10 +6,10 @@ const AnswersSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-lg text-gray-700 leading-relaxed mb-8">
-            At Health Center, we're your trusted source for expert-reviewed,
-            evidence-based health information and comprehensive wellness
-            guidance. Our mission is to provide clarity and help you navigate
-            your health journey with confidence.
+            At Health Center, we&apos;re your trusted source for
+            expert-reviewed, evidence-based health information and comprehensive
+            wellness guidance. Our mission is to provide clarity and help you
+            navigate your health journey with confidence.
           </p>
 
           <p className="text-lg text-gray-700 leading-relaxed mb-8">
@@ -24,8 +24,8 @@ const AnswersSection = () => {
             Each article is medically reviewed by our medical experts, backed by
             research studies and current scientific findings. Whether you need
             information about symptoms, treatments, prevention, or general
-            wellness, we&apos;re here to help you understand your health and make
-            informed decisions.
+            wellness, we&apos;re here to help you understand your health and
+            make informed decisions.
           </p>
         </div>
       </div>
