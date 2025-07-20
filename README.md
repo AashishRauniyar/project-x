@@ -1,4 +1,18 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HealthScopeDaily
+
+A comprehensive health and wellness website providing expert reviews, evidence-based health information, and wellness guidance.
+
+## About HealthScopeDaily
+
+HealthScopeDaily is a leading source for expert health and wellness reviews, providing evidence-based information about supplements, health products, and wellness solutions. Our mission is to bridge the gap between complex medical research and practical wellness decisions.
+
+## Features
+
+- **Expert Reviews**: Comprehensive product reviews by healthcare professionals
+- **Evidence-Based Content**: All content backed by scientific research
+- **Health Categories**: Supplements, skincare, fitness, mental health, and more
+- **Professional Team**: Healthcare professionals, researchers, and wellness experts
+- **Unbiased Information**: Transparent review process free from commercial bias
 
 ## Getting Started
 

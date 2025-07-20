@@ -408,16 +408,20 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* WOWMD Promotional Banner */}
+      {/* HealthScopeDaily Promotional Banner */}
       <div className="bg-gradient-to-r from-orange-100 via-yellow-50 to-blue-50 py-4">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-orange-200 rounded-full flex items-center justify-center hover:bg-orange-300 hover:scale-110 transition-all duration-300 cursor-pointer">
-                <span className="text-3xl hover:animate-pulse">💊</span>
+              <div className="w-16 h-16 flex items-center justify-center hover:scale-110 transition-all duration-300 cursor-pointer">
+                <img
+                  src="/HealthScopeDaily.png"
+                  alt="HealthScopeDaily Logo"
+                  className="w-16 h-16 object-contain hover:opacity-90"
+                />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900">WOWMD™</h3>
+                <h3 className="text-xl font-bold text-gray-900">HealthScopeDaily™</h3>
                 <p className="text-sm text-gray-600">
                   EMPOWERING YOUR HEALTH JOURNEY
                 </p>

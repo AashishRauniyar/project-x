@@ -1,0 +1,45 @@
+<svg width="120" height="40" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="headerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#20B2AA;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#48D1CC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#20B2AA;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Logo icon -->
+  <g transform="translate(5, 5)">
+    <!-- Stethoscope outline -->
+    <path d="M8 12 Q8 8 12 8 L16 8 Q20 8 20 12 L20 28 Q20 32 16 32 L12 32 Q8 32 8 28 Z" 
+          fill="none" 
+          stroke="url(#headerGradient)" 
+          stroke-width="2" 
+          stroke-linecap="round"/>
+    
+    <!-- Left ear tube -->
+    <path d="M8 12 Q6 10 5 9" 
+          fill="none" 
+          stroke="url(#headerGradient)" 
+          stroke-width="1.5" 
+          stroke-linecap="round"/>
+    
+    <!-- Right ear tube -->
+    <path d="M20 12 Q22 10 23 9" 
+          fill="none" 
+          stroke="url(#headerGradient)" 
+          stroke-width="1.5" 
+          stroke-linecap="round"/>
+    
+    <!-- ECG waveform -->
+    <path d="M10 20 L12 20 L12.5 18 L13 22 L13.5 18 L14 22 L14.5 18 L15 20 L18 20 L19 18 L20 22 L21 18 L22 22 L23 18 L24 20" 
+          fill="none" 
+          stroke="url(#headerGradient)" 
+          stroke-width="1.2" 
+          stroke-linecap="round"/>
+  </g>
+  
+  <!-- Text: HealthScopeDaily -->
+  <text x="35" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="url(#headerGradient)">
+    HealthScopeDaily
+  </text>
+</svg> 

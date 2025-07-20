@@ -1,4 +1,4 @@
-import Navbar from "@/components/ui/Navbar";
+import Navbar from "@/components/layout/Navbar";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import Footer from "@/components/ui/Footer";
 
