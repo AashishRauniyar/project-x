@@ -343,30 +343,14 @@ export default function LandingPage() {
       <div className="bg-gradient-to-r from-orange-100 via-yellow-50 to-blue-50 py-4">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 flex items-center justify-center hover:scale-110 transition-all duration-300 cursor-pointer">
-                <img
-                  src="/HealthScopeDaily.png"
-                  alt="HealthScopeDaily Logo"
-                  className="w-16 h-16 object-contain hover:opacity-90"
-                />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">HealthScopeDaily™</h3>
-                <p className="text-sm text-gray-600">
-                  EMPOWERING YOUR HEALTH JOURNEY
-                </p>
-              </div>
-            </div>
-
-            <div className="text-center">
+            {/* Removed logo and HealthScopeDaily text */}
+            <div className="text-center w-full flex flex-col items-center justify-center">
               <h2 className="text-3xl font-bold text-red-600">
                 GET UP TO 50% OFF
               </h2>
               <p className="text-lg text-gray-700">HEALTH-BOOSTING BUNDLES*</p>
             </div>
-
-            <button className="bg-gray-800 text-yellow-300 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-700 transition shadow-lg">
+            <button className="bg-gray-800 text-yellow-300 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-700 transition shadow-lg ml-8">
               CLAIM YOUR DISCOUNT TODAY
             </button>
           </div>

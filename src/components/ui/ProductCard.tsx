@@ -23,130 +23,56 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product, className = '' }) => {
   const renderStars = (rating: number) => {
     const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-
-    for (let i = 0; i < fullStars; i++) {
+    const fullStars = Math.round(rating); // Always show 5 stars, round rating
+    for (let i = 0; i < 5; i++) {
       stars.push(
-        <svg key={`full-${i}`} className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
+        <svg key={i} className={`w-5 h-5 ${i < fullStars ? 'text-yellow-400' : 'text-neutral-300'} fill-current`} viewBox="0 0 24 24">
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
         </svg>
       );
     }
-
-    if (hasHalfStar) {
-      stars.push(
-        <svg key="half" className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
-          <defs>
-            <linearGradient id={`half-fill-${product.id}`}>
-              <stop offset="50%" stopColor="currentColor" />
-              <stop offset="50%" stopColor="transparent" />
-            </linearGradient>
-          </defs>
-          <path fill={`url(#half-fill-${product.id})`} d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-        </svg>
-      );
-    }
-
-    const emptyStars = 5 - Math.ceil(rating);
-    for (let i = 0; i < emptyStars; i++) {
-      stars.push(
-        <svg key={`empty-${i}`} className="w-4 h-4 text-neutral-300 fill-current" viewBox="0 0 24 24">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-        </svg>
-      );
-    }
-
     return stars;
   };
 
   return (
-    <div className={`bg-white border border-neutral-200 rounded-lg shadow-soft hover:shadow-medium transition-shadow duration-300 ${className}`}>
+    <div className={`bg-white border border-neutral-200 rounded-2xl shadow-2xl transition-shadow duration-300 p-6 flex flex-col items-center ${className}`} style={{ minWidth: 0 }}>
       {/* Rank Badge */}
       {product.rank && (
-        <div className="relative">
-          <div className="absolute -top-2 -left-2 z-10">
-            <div className="bg-accent-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
-              #{product.rank}
-            </div>
-          </div>
+        <div className="absolute -top-3 -left-3 z-10">
+          <div className="bg-red-500 text-white rounded-full w-9 h-9 flex items-center justify-center text-base font-bold shadow-lg border-4 border-white">#{product.rank}</div>
         </div>
       )}
-
-      <div className="p-6">
-        {/* Header with Title and Link */}
-        <div className="mb-4">
-          <h3 className="text-lg font-bold text-neutral-900 mb-2">
-            {product.reviewUrl ? (
-              <Link
-                href={product.reviewUrl}
-                className="hover:text-primary-600 transition-colors duration-200"
-              >
-                {product.title}
-              </Link>
-            ) : (
-              product.title
-            )}
-          </h3>
-        </div>
-
-        {/* Product Image */}
-        <div className="mb-4 flex justify-center">
+      {/* Product Image */}
+      {product.image && (
+        <div className="mb-3 flex justify-center w-full">
           <img
             src={product.image}
             alt={product.title}
-            className="w-32 h-32 object-contain"
+            className="w-36 h-36 object-contain rounded-xl border-2 border-primary-100 bg-white shadow-md"
           />
         </div>
-
-        {/* Price and CTA */}
-        <div className="mb-4 text-center">
-          <div className="text-2xl font-bold text-primary-600 mb-3">
-            {product.price}
-          </div>
-          <Link
-            href={product.shopUrl}
-            className="inline-block bg-secondary-600 hover:bg-secondary-700 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
-          >
-            Shop Now
-          </Link>
+      )}
+      {/* Rating (number + stars) */}
+      {product.rating && product.rating > 0 && (
+        <div className="flex items-center gap-2 mb-2 mt-1">
+          <span className="text-2xl font-extrabold text-yellow-500">{product.rating.toFixed(1)}</span>
+          <div className="flex items-center">{renderStars(product.rating)}</div>
+          <span className="text-base text-gray-500 font-medium">/5</span>
         </div>
-
-        {/* Description */}
-        <p className="text-sm text-neutral-700 mb-4 leading-relaxed">
-          {product.description}
-        </p>
-
-        {/* Key Ingredients */}
-        <div className="mb-4">
-          <h4 className="text-sm font-semibold text-neutral-900 mb-2">Key Ingredients:</h4>
-          <p className="text-sm text-neutral-600">
-            {product.keyIngredients.join(', ')}
-          </p>
-        </div>
-
-        {/* Price Info */}
-        <div className="mb-4">
-          <h4 className="text-sm font-semibold text-neutral-900 mb-2">Price:</h4>
-          <p className="text-sm text-neutral-600">{product.price}</p>
-        </div>
-
-        {/* Benefits */}
-        <div className="mb-6">
-          <h4 className="text-sm font-semibold text-neutral-900 mb-2">What It Does:</h4>
-          <p className="text-sm text-neutral-600">
-            {product.benefits.join(', ')}
-          </p>
-        </div>
-
-        {/* Rating */}
-        {product.rating && (
-          <div className="flex items-center justify-center space-x-1 pt-4 border-t border-neutral-100">
-            {renderStars(product.rating)}
-            <span className="text-sm text-neutral-600 ml-2">({product.rating}/5)</span>
-          </div>
-        )}
-      </div>
+      )}
+      {/* Title */}
+      <h3 className="text-base font-bold text-center text-neutral-900 mb-3 leading-tight line-clamp-2">{product.title}</h3>
+      {/* Order Now Button */}
+      {product.shopUrl && (
+        <a
+          href={product.shopUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-bold text-lg shadow-lg transition-colors duration-200 w-full text-center"
+        >
+          Order Now
+        </a>
+      )}
     </div>
   );
 };

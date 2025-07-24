@@ -106,7 +106,17 @@ export interface Post extends WPEntity {
     | "audio";
   categories: number[];
   tags: number[];
-  meta: Record<string, unknown>;
+  meta: {
+    order_url?: string;
+    product_image?: string;
+    rating?: number;
+    review_count?: number;
+    price?: string;
+    benefits?: string[];
+    key_ingredients?: string[];
+    description?: string;
+    [key: string]: any;
+  };
   yoast_head?: string;
   yoast_head_json?: YoastHeadJson;
   _embedded?: {

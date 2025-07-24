@@ -3,7 +3,7 @@ import { Category } from "@/app/lib/wordpress.d";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Breadcrumb from "@/components/ui/Breadcrumb";
-import Footer from "@/components/ui/Footer";
+
 
 // Interface for hierarchical category structure
 interface CategoryWithChildren extends Category {
@@ -48,15 +48,20 @@ export default async function CategoriesPage() {
   let categoriesHierarchy: CategoryWithChildren[] = [];
   let totalCategories = 0;
   let totalPosts = 0;
+  let debugCategories: Category[] | undefined; // Added for debugging
 
   try {
     const wpCategories = await getAllCategories();
     console.log("📋 All categories fetched:", wpCategories);
 
-    // Filter out uncategorized and organize into hierarchy
-    const validCategories = wpCategories.filter(
-      (cat) => cat.name !== "Uncategorized" && cat.count > 0
-    );
+    // DEBUG: Show raw categories on the page
+    debugCategories = wpCategories;
+
+    // TEMP: Remove filtering for debugging
+    // const validCategories = wpCategories.filter(
+    //   (cat) => cat.name !== "Uncategorized" && cat.count > 0
+    // );
+    const validCategories = wpCategories; // Show all for debugging
 
     categoriesHierarchy = organizeCategories(validCategories);
     totalCategories = validCategories.length;
@@ -157,7 +162,7 @@ export default async function CategoriesPage() {
   }) => (
     <div
       className={`group bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-primary-200 transition-all duration-300 overflow-hidden ${
-        isSubcategory ? "" : "lg:col-span-1"
+        isSubcategory ? '' : 'lg:col-span-1'
       }`}
     >
       <Link href={`/category/${category.slug}`} className="block">
@@ -166,7 +171,7 @@ export default async function CategoriesPage() {
             <div className="flex-1">
               <h3
                 className={`font-bold text-gray-900 group-hover:text-primary-600 transition-colors ${
-                  isSubcategory ? "text-lg" : "text-xl"
+                  isSubcategory ? 'text-lg' : 'text-xl'
                 } mb-2`}
               >
                 {category.name}
@@ -181,51 +186,98 @@ export default async function CategoriesPage() {
               {category.count}
             </span>
           </div>
-
-          {!isSubcategory && category.children.length > 0 && (
-            <div className="pt-4 border-t border-gray-100">
-              <div className="flex items-center text-primary-600 text-sm font-medium">
-                <svg
-                  className="w-4 h-4 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                  />
-                </svg>
-                {category.children.length} subcategories
-                <svg
-                  className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div>
-            </div>
-          )}
         </div>
       </Link>
     </div>
   );
 
+  // Recursive component to render subcategories at any depth
+  const RecursiveSubcategories = ({
+    subcategories,
+    parentName,
+    level = 1,
+  }: {
+    subcategories: CategoryWithChildren[];
+    parentName: string;
+    level?: number;
+  }) => {
+    if (!subcategories || subcategories.length === 0) return null;
+    // Map level to Tailwind margin classes (max ml-32)
+    const marginLevels = ['ml-8', 'ml-16', 'ml-24', 'ml-32'];
+    const marginClass = marginLevels[Math.min(level - 1, marginLevels.length - 1)];
+    return (
+      <div className={`${marginClass} mt-4`}>
+        <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
+          <span className="w-1 h-6 bg-primary-500 rounded-full mr-3"></span>
+          {parentName} Subcategories
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {subcategories.map((child) => (
+            <div key={child.id} className="space-y-4">
+              <CategoryCard category={child} isSubcategory={true} />
+              {/* Recursively render children if present */}
+              {child.children && child.children.length > 0 && (
+                <RecursiveSubcategories
+                  subcategories={child.children}
+                  parentName={child.name}
+                  level={level + 1}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  // Recursive component to render nested category list
+  function CategoryNestedList({ categories }: { categories: CategoryWithChildren[] }) {
+    return (
+      <ul className="list-disc pl-6">
+        {categories.map((category) => (
+          <li key={category.id}>
+            <Link href={`/category/${category.slug}`} className="text-primary-600 hover:underline">
+              {category.name}
+            </Link>
+            {category.children && category.children.length > 0 && (
+              <CategoryNestedList categories={category.children} />
+            )}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <Navbar />
+      
 
       <main className="max-w-7xl mx-auto px-4 py-6">
         <Breadcrumb items={breadcrumbItems} />
+
+        {/* Nested list of all categories */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">All Categories (Nested)</h2>
+          {categoriesHierarchy.length > 0 ? (
+            <CategoryNestedList categories={categoriesHierarchy} />
+          ) : (
+            <div className="text-gray-500">No categories found.</div>
+          )}
+        </div>
+
+        {/* Flat list of top-level categories as links */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">All Top-Level Categories</h2>
+          <ul className="list-disc pl-6">
+            {categoriesHierarchy.map((category) => (
+              <li key={category.id}>
+                <Link href={`/category/${category.slug}`} className="text-primary-600 hover:underline">
+                  {category.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         {/* Page Header */}
         <div className="bg-white rounded-2xl p-8 shadow-sm mt-6 mb-8 border border-gray-100">
@@ -308,28 +360,20 @@ export default async function CategoriesPage() {
 
         {/* Categories Grid */}
         <div className="space-y-12">
+          {categoriesHierarchy.length === 0 && (
+            <div className="text-center text-gray-500 py-12">No categories found.</div>
+          )}
           {categoriesHierarchy.map((category) => (
             <div key={category.id} className="space-y-6">
               {/* Parent Category */}
               <CategoryCard category={category} />
-
-              {/* Subcategories */}
+              {/* All Subcategories (recursive) */}
               {category.children.length > 0 && (
-                <div className="ml-8">
-                  <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
-                    <span className="w-1 h-6 bg-primary-500 rounded-full mr-3"></span>
-                    {category.name} Subcategories
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {category.children.map((child) => (
-                      <CategoryCard
-                        key={child.id}
-                        category={child}
-                        isSubcategory={true}
-                      />
-                    ))}
-                  </div>
-                </div>
+                <RecursiveSubcategories
+                  subcategories={category.children}
+                  parentName={category.name}
+                  level={1}
+                />
               )}
             </div>
           ))}
@@ -362,7 +406,7 @@ export default async function CategoriesPage() {
         </div>
       </main>
 
-      <Footer />
+
     </div>
   );
 }

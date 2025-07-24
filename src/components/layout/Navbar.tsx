@@ -24,6 +24,7 @@ export default function Navbar() {
   >([]);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [hoveredCategory, setHoveredCategory] = useState<number | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   // Function to organize categories into hierarchical structure
   const organizeCategories = (
@@ -208,6 +209,10 @@ export default function Navbar() {
     };
 
     fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    getAllCategories().then((cats) => setCategories(cats || []));
   }, []);
 
   const toggleDropdown = (dropdown: string) => {

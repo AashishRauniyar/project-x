@@ -208,85 +208,92 @@ async function BlogContent() {
 
         {/* Articles Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map((post) => (
-            <article
-              key={post.id}
-              className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group"
-            >
-              {/* Article Image Placeholder */}
-              <div className="h-48 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center group-hover:from-primary-200 group-hover:to-primary-300 transition-all duration-300">
-                <div className="text-primary-600 text-center">
-                  <div className="w-16 h-16 mx-auto mb-2 bg-primary-600 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold text-2xl">
-                      {post.title.rendered.charAt(0)}
+          {posts.map((post) => {
+            // Get featured image URL if available
+            const featuredImage = post._embedded && post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]?.source_url;
+            return (
+              <article
+                key={post.id}
+                className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group"
+              >
+                {/* Article Image or Placeholder */}
+                {featuredImage ? (
+                  <img
+                    src={featuredImage}
+                    alt={post.title.rendered}
+                    className="h-48 w-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                  />
+                ) : (
+                  <div className="h-48 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center group-hover:from-primary-200 group-hover:to-primary-300 transition-all duration-300">
+                    <div className="text-primary-600 text-center">
+                      <div className="w-16 h-16 mx-auto mb-2 bg-primary-600 rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-2xl">
+                          {post.title.rendered.charAt(0)}
+                        </span>
+                      </div>
+                      <p className="text-sm font-medium">Featured Article</p>
+                    </div>
+                  </div>
+                )}
+                <div className="p-6">
+                  {/* Category Badge */}
+                  <div className="flex items-center gap-2 mb-3">
+                    <TagIcon className="w-4 h-4 text-primary-600" />
+                    <span className="text-sm font-medium text-primary-600">
+                      {post.categories.length > 0
+                        ? getCategoryName(post.categories[0])
+                        : "Health"}
                     </span>
                   </div>
-                  <p className="text-sm font-medium">Featured Article</p>
-                </div>
-              </div>
-
-              <div className="p-6">
-                {/* Category Badge */}
-                <div className="flex items-center gap-2 mb-3">
-                  <TagIcon className="w-4 h-4 text-primary-600" />
-                  <span className="text-sm font-medium text-primary-600">
-                    {post.categories.length > 0
-                      ? getCategoryName(post.categories[0])
-                      : "Health"}
-                  </span>
-                </div>
-
-                {/* Title */}
-                <h2 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors line-clamp-2">
-                  <Link href={`/post/${post.slug}`}>{post.title.rendered}</Link>
-                </h2>
-
-                {/* Excerpt */}
-                <p className="text-gray-600 mb-4 line-clamp-3">
-                  {post.excerpt.rendered
-                    ? post.excerpt.rendered.replace(/<[^>]*>/g, "")
-                    : getExcerpt(post.content.rendered)}
-                </p>
-
-                {/* Meta Information */}
-                <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1">
-                      <CalendarIcon className="w-4 h-4" />
-                      <span>{formatDate(post.date)}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <ClockIcon className="w-4 h-4" />
-                      <span>
-                        {getReadingTime(post.content.rendered)} min read
-                      </span>
+                  {/* Title */}
+                  <h2 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors line-clamp-2">
+                    <Link href={`/post/${post.slug}`}>{post.title.rendered}</Link>
+                  </h2>
+                  {/* Excerpt */}
+                  <p className="text-gray-600 mb-4 line-clamp-3">
+                    {post.excerpt.rendered
+                      ? post.excerpt.rendered.replace(/<[^>]*>/g, "")
+                      : getExcerpt(post.content.rendered)}
+                  </p>
+                  {/* Meta Information */}
+                  <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-1">
+                        <CalendarIcon className="w-4 h-4" />
+                        <span>{formatDate(post.date)}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <ClockIcon className="w-4 h-4" />
+                        <span>
+                          {getReadingTime(post.content.rendered)} min read
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-
-                {/* Read More Button */}
-                <Link
-                  href={`/post/${post.slug}`}
-                  className="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors group/link"
-                >
-                  Read Full Article
-                  <svg
-                    className="w-4 h-4 ml-1 group-hover/link:translate-x-1 transition-transform"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                  {/* Read More Button */}
+                  <Link
+                    href={`/post/${post.slug}`}
+                    className="inline-flex items-center text-primary-600 font-medium hover:text-primary-700 transition-colors group/link"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </Link>
-              </div>
-            </article>
-          ))}
+                    Read Full Article
+                    <svg
+                      className="w-4 h-4 ml-1 group-hover/link:translate-x-1 transition-transform"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </Link>
+                </div>
+              </article>
+            );
+          })}
         </div>
 
         {/* Load More Button */}
